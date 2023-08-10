@@ -1,0 +1,166 @@
+#ifndef __MODEM_H__
+#define __MODEM_H__
+
+#include "def.h"
+#include "sender.h"
+
+void modem(void);
+void modem_command(uint8_t cmd);
+uint8_t modem_result(void);
+void modem_1s_tick(void);
+uint8_t modem_status(void);
+
+#define MODEM_RX_BUFFER_SIZE	64  // Worst case: sms received phone
+#define MODEM_TX_BUFFER_SIZE	64  // Worst case: gprs APD
+#define MODEM_CIR_BUFF_SIZE   64
+#define MODEM_RX_DATA_SIZE	  16
+
+#define INTER_MSG			        1000 // 1s
+#define STD_TIMEOUT			      2000 // 2s
+
+#define MAX_REG_RETRIES 2
+
+#define MODEM_PERIODIC_CHK_TIME       600   // 600s
+#define MODEM_PERIODIC_NOT_REG_TIME   60   // 60s
+#define MODEM_AWAKE_TIME              5     // 5s
+#define WAKE_PULSE_TIME               1000  // 1s
+
+#define TIME_RESET            43200 //12hrs 
+
+#define DISCONNECTED_RETRIES    15
+
+#define SMS_ID_SIZE           4// 2's power
+#define SMS_ID_SIZE_MASK      0x03
+
+#define MODEM_ENA			P4OUT_bit.P5
+#define BLUE_DIS			P4OUT_bit.P2
+#define PIN_ENABLE    P2OUT_bit.P5
+enum {
+  MODEM_STAT_INI,
+  MODEM_STAT_IDLE,
+  MODEM_STAT_CHECK,
+  MODEM_STAT_SLEEP,
+  MODEM_STAT_SMS_TXRX,
+  MODEM_STAT_VOICE,
+};
+
+enum{
+  MODEM_CMD_NONE,
+  MODEM_CMD_SMS,
+  MODEM_CMD_VOICE
+};
+
+enum{
+  MODEM_RES_OFF,
+  MODEM_RES_WAIT,
+  MODEM_RES_OK,
+  MODEM_RES_ERR
+};
+
+enum{
+  VOICE_STATE_NONE,
+  VOICE_STATE_DIALING,
+  VOICE_STATE_DIALING2,
+  VOICE_STATE_RINGING,
+  VOICE_STATE_CONNECTED,
+  VOICE_STATE_RELEASED,
+  VOICE_STATE_DISCONNECTED,
+  VOICE_STATE_NO_CARRIER
+};
+
+enum{
+//Init. states>>>
+MODEM_INIT_0, //00
+MODEM_INIT_1, //01
+MODEM_INIT_2, //02
+MODEM_INIT_3, //03
+//MODEM_INIT_4, //2
+//MODEM_INIT_5, //3
+MODEM_ECHO_OFF, //04
+MODEM_ECHO_OFF_ECHO_OR_OK, //05
+MODEM_ECHO_OFF_OK, //06
+MODEM_FLOW_C, //07
+MODEM_KSLEEP, //08
+MODEM_KSLEEP_OK, //09
+MODEM_KVGT, //10
+MODEM_KVGT_OK, //11
+MODEM_VGT, //12
+MODEM_VGT_OK, //13
+MODEM_FLOW_C_OK, //14
+MODEM_INIT_GPIO4, //15
+MODEM_INIT_GPIO4_OK, //16
+MODEM_INIT2_GPIO4, //17
+MODEM_INIT2_GPIO4_OK, //18
+MODEM_INIT_GPIO1, //19
+MODEM_INIT_GPIO1_OK,    //20
+MODEM_INIT_GPIO2, //21
+MODEM_INIT_GPIO2_OK, //22
+MODEM_INIT2_GPIO2, //23
+MODEM_INIT2_GPIO2_OK, //24
+MODEM_INIT_GPIO3, //25
+MODEM_INIT_GPIO3_OK, //25
+MODEM_INIT2_GPIO3, //27
+MODEM_INIT2_GPIO3_OK, //28
+//MODEM_AUTOBAND,
+//MODEM_AUTOBAND_OK,
+//MODEM_BAND,
+//MODEM_BAND_OK,
+MODEM_REG_MODE, //29
+MODEM_REG_MODE_OK,      //30
+MODEM_MODE, //31
+MODEM_MODE_OK, //32
+MODEM_EVENT, //33
+MODEM_EVENT_OK, //34
+/*VOICE_GAIN,
+VOICE_GAIN_OK,
+VOICE_TYPE,
+VOICE_TYPE_OK,          //30
+VOICE_MODE,
+VOICE_MODE_OK,*/
+MODEM_INIT_DONE, //35
+//<<<
+
+//Loop states>>>
+MODEM_CMD_WAIT, //36
+//MODEM_FUN,
+//MODEM_FUN_OK,
+MODEM_SLEEPING_WAIT, //37
+MODEM_WAKE_0, //38
+MODEM_WAKE_1, //39
+//<<<
+
+SMS,                    //40
+SMS_PROMPT, //41
+SMS_STORE_LOCATION, //42
+SMS_OK, //43
+
+VOICE_DIAL, //44
+VOICE_STATUS, //45
+VOICE_PLAY, //46
+VOICE_PLAY_OK, //47
+VOICE_PLAY_2, //48
+VOICE_PLAY_2_OK, //49
+VOICE_READY,            //50
+VOICE_READY_2, //51
+VOICE_READY_2_OK, //52
+VOICE_HANG, //53
+
+//Periodic states>>>
+MODEM_REG,              //54
+MODEM_REG_RESPONSE,     //55
+MODEM_REG_OK,           //56
+MODEM_SIG,              //57
+MODEM_SIG_RESPONSE,     //58
+MODEM_SIG_OK,           //59
+MODEM_SMS_DEL_ALL,      //60
+MODEM_SMS_DEL_ALL_OK,   //61
+MODEM_PERIODIC_END,     //62
+//<<<
+
+MODEM_RESET_0,
+MODEM_RESET_1
+};
+
+extern uint8_t MODEM_Signal[];
+
+#endif /* __MODEM_H__ */
